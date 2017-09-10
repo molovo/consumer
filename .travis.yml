@@ -1,0 +1,24 @@
+language: node_js
+sudo: false
+install: npm install
+jobs:
+  include:
+  - stage: lint
+    script: npm run lint
+    node_js: 8
+  - stage: test
+    script: npm test
+    node_js: 6
+  - script: npm test
+    node_js: 7
+  - script: npm test
+    node_js: 8
+  - stage: coverage
+    script: npm test && npm run coverage
+    allow_failures: true
+    node_js: 8
+notifications:
+  email: false
+env:
+  global:
+    secure: D44+OJgQUrYOFEPaIXopYleH6qL2BetqRNBd0oDkWdm2jVtq4LoHqTpNt8q3tbDx4M3/xHggAgCb2Wcvh/LdIv9tY2g/0LrjZP8v3avsqRfGrCa4FQLT+43rzmVVcF+XmLL9cfnOUzvGU8yB4qYWiZ0bj2vVBMSJKlg241d2O3P9/6BQKjGdbFK5eNI2/9rprHI5lstIlhmdXj6Qg1TVscZHwlaNjd9lb/7O4bZWT6Bi7PSKhEAIUw8LAtyNBc0u/rBx3uE3XevwTw1luvrExZw7+9g9QOcu7IBou8N9Tn6EZa1j1dmSX/w46lc0WI20+s52Xz1VkZpo1MeaoLZf3LWjdkoi8i6Y2pQ2KNC9QnNWHpS7dhORFQElmt3K4CCEJY58YDhWWVwu+4+/lOBg5UAiVVp2x6+EaSqOuR7SrY1cxiOQ09n1bGQzxHdC7E0l6w3kq5H1HvOzo0w5G3zYm5NY1aBceqKQ2ecK4//37CDAsowaBG6r3GoLFpalF9BySPfSY2FMQPDrxGCMKkAkJgKXNiIQCnKecmc2rPi58SiHaLurZ25utst2h4+exBQ3/W1Ns8fRq/Ryk2yIWBtYPwW0yTGOwc9DlFXvGj1qD/QYfN85Bsxx496g0sd6dHlXs6oUUklSbFjSKemt8ZIgWMZ5sFR1sM1GlKz9fyzsWCU=

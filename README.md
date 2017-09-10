@@ -16,7 +16,7 @@ This project uses modern JavaScript API's, and does not polyfill anything. To us
 
 Consumer uses proxy objects to allow using chainable properties to construct a url for a REST API endpoint, and then execute the request for you. Each property you chain is appended to the url, and returns a new proxy. If you call one of the methods `all`, `get`, `create`, `update`, or `delete` at any point in the chain, a `fetch` request is executed, and the parsed JSON response is returned to you in a Promise.
 
-See below for a brief explanation of functionality
+See below for a brief explanation of functionality, or try out Consumer in the playground on [RunKit](https://runkit.com/molovo/api-consumer).
 
 ```js
 import consume from 'api-consumer'

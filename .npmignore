@@ -1,0 +1,14 @@
+src
+test
+Makefile
+CONTRIBUTING.md
+CODE-OF-CONDUCT.md
+yarn.lock
+package-lock.json
+.editorconfig
+.babelrc
+.eslintrc
+.sonarlint
+.travis.yml
+.nyc_output
+coverage

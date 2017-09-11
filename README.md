@@ -34,7 +34,7 @@ const users = await api.your.deeply.nested.endpoint.all()
 const posts = await api.users[123].posts.all()
 
 // GET https://your.domain.com/api/users/123
-const user = await api.users.get(123)
+const user = await api.users.find(123)
 
 // POST https://your.domain.com/api/users
 const newUser = await api.users.create({

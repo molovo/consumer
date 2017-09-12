@@ -1,0 +1,24 @@
+{
+  "books": [
+    {
+      "id": 1,
+      "title": "The Great Gatsby",
+      "authorId": 1
+    },
+    {
+      "id": 2,
+      "title": "Great Expectations",
+      "authorId": 2
+    }
+  ],
+  "authors": [
+    {
+      "id": 1,
+      "name": "F. Scott Fitzgerald"
+    },
+    {
+      "id": 2,
+      "name": "Charles Dickens"
+    }
+  ]
+}

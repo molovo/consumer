@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import server from './fixtures/server'
 import listen from 'test-listen'
-import consume from '../lib/index'
+import {consume, Model} from '../lib/index'
 import test from 'ava'
 
 test('consumer instantiates correctly', async t => {
@@ -96,6 +96,18 @@ test.serial('delete() deletes a resource', async t => {
 
   const response = await api.books.delete(1)
   t.true(response.ok)
+})
+
+test.serial('Consumer can retrieve a specific model', async t => {
+  const url = await listen(server.listen())
+  const api = consume(url)
+
+  class Book extends Model {
+  }
+
+  const book = await api.books.as(Book).find(1)
+  t.is(book.constructor.name, 'Book')
+  t.is(book.title, 'The Great Gatsby')
 })
 
 test('promise rejects for 404', async t => {

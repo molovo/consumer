@@ -12,3 +12,4 @@ package-lock.json
 .travis.yml
 .nyc_output
 coverage
+.codeclimate.yml

@@ -7,14 +7,19 @@ const router = jsonServer.router(clone(data))
 const middlewares = jsonServer.defaults()
 const server = jsonServer.create()
 server.use(middlewares)
-server.use(router)
+server.use(
+  (req, res, next) => {
+    if (req.path === '/thisEndpointErrors/1') {
+      return res.sendStatus(400)
+    }
 
-// Add an additional handler which resets the data prior
-// to each request
-server.use((req, res, next) => {
-  if (req.path === '/') return next()
-  router.db.setState(clone(data))
-  next()
-})
+    next()
+  },
+  (req, res, next) => {
+    if (req.path === '/') return next()
+    router.db.setState(clone(data))
+    next()
+  },
+  router)
 
 export default server

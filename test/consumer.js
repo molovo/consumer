@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import server from './fixtures/server'
 import listen from 'test-listen'
-import {consume, Model} from '../lib/index'
+import {consume, Model, Collection} from '../lib/index'
 import test from 'ava'
 
 test('consumer instantiates correctly', async t => {
@@ -39,66 +39,28 @@ test('chaining properties updates URL', async t => {
   t.is(api.users['me/profile']._url, 'https://unicorns.rainbows/users/me/profile')
 })
 
-test.serial('all() retrieves data', async t => {
+test('all() retrieves data', async t => {
   const url = await listen(server.listen())
   const api = consume(url)
 
   const books = await api.books.all()
 
+  t.true(books instanceof Collection)
   t.is(books.length, 2)
-  books.forEach((book) => t.is(book.constructor.name, 'Model'))
+  books.forEach((book) => t.true(book instanceof Model))
 })
 
-test.serial('find() retrieves data', async t => {
+test('find() retrieves data', async t => {
   const url = await listen(server.listen())
   const api = consume(url)
 
   const book = await api.books.find(1)
 
-  t.is(book.constructor.name, 'Model')
+  t.true(book instanceof Model)
   t.is(book.id, 1)
 })
 
-test.serial('create() creates a new resource', async t => {
-  const url = await listen(server.listen())
-  const api = consume(url)
-
-  const data = {
-    title: 'The Catcher in the Rye',
-    authorId: 3
-  }
-  const book = await api.books.create(data)
-
-  t.is(book.constructor.name, 'Model')
-  t.is(book.title, data.title)
-  t.is(book.authorId, data.authorId)
-})
-
-test.serial('update() updates an existing resource', async t => {
-  const url = await listen(server.listen())
-  const api = consume(url)
-
-  const book = await api.books.find(1)
-
-  const data = {
-    title: 'A changed title'
-  }
-  const updatedBook = await api.books.update(1, data)
-
-  t.is(updatedBook.constructor.name, 'Model')
-  t.is(updatedBook.title, data.title)
-  t.not(updatedBook.title, book.title)
-})
-
-test.serial('delete() deletes a resource', async t => {
-  const url = await listen(server.listen())
-  const api = consume(url)
-
-  const response = await api.books.delete(1)
-  t.true(response.ok)
-})
-
-test.serial('Consumer can retrieve a specific model', async t => {
+test('find() can collect into a specific model', async t => {
   const url = await listen(server.listen())
   const api = consume(url)
 
@@ -110,10 +72,55 @@ test.serial('Consumer can retrieve a specific model', async t => {
   t.is(book.title, 'The Great Gatsby')
 })
 
-test('promise rejects for 404', async t => {
+test('create() creates a new resource', async t => {
   const url = await listen(server.listen())
   const api = consume(url)
 
-  return api.notAnEndpoint.find(1)
-    .catch(() => t.pass())
+  const data = {
+    title: 'The Catcher in the Rye',
+    authorId: 3
+  }
+  const book = await api.books.create(data)
+
+  t.true(book instanceof Model)
+  t.is(book.title, data.title)
+  t.is(book.authorId, data.authorId)
+})
+
+test('update() updates an existing resource', async t => {
+  const url = await listen(server.listen())
+  const api = consume(url)
+
+  const book = await api.books.find(1)
+
+  const data = {
+    title: 'A changed title'
+  }
+  const updatedBook = await api.books.update(1, data)
+
+  t.true(updatedBook instanceof Model)
+  t.is(updatedBook.title, data.title)
+  t.not(updatedBook.title, book.title)
+})
+
+test('delete() deletes a resource', async t => {
+  const url = await listen(server.listen())
+  const api = consume(url)
+
+  t.true(await api.books.delete(1))
+})
+
+test('returns nothing for 404', async t => {
+  const url = await listen(server.listen())
+  const api = consume(url)
+
+  const model = await api.notAnEndpoint.find(1)
+  t.falsy(model)
+})
+
+test('rejects for any other status', async t => {
+  const url = await listen(server.listen())
+  const api = consume(url)
+
+  return t.throws(api.thisEndpointErrors.find(1))
 })

@@ -1,9 +1,36 @@
 {
-  "presets": ["es2015", "stage-2"],
-  "plugins": ["transform-class-properties"],
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            "last 2 versions",
+            "not ie <= 11",
+            "not android <= 60"
+          ]
+        },
+        "useBuiltins": true,
+        "debug": false
+      }
+    ],
+    "stage-2"
+  ],
+  "plugins": [
+    "transform-class-properties",
+    "transform-object-rest-spread",
+    "transform-decorators-legacy",
+    "transform-class-properties"
+  ],
   "env": {
     "test": {
-      "plugins": ["istanbul", "transform-class-properties"]
+      "plugins": [
+        "transform-class-properties",
+        "transform-object-rest-spread",
+        "transform-decorators-legacy",
+        "transform-class-properties",
+        "istanbul"
+      ]
     }
   }
 }

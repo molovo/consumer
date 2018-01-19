@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import server from './fixtures/server'
 import listen from 'test-listen'
-import { consume, Model, Collection } from '../lib/index'
+import { consume, Model, createModel, Collection } from '../lib/index'
 import test from 'ava'
 
 test('can be updated', async t => {
@@ -36,8 +36,9 @@ test('can be updated with mass assignment', async t => {
 })
 
 test('must define consumer', async t => {
-  class Book extends Model { }
-  const error = t.throws(() => new Book(), ReferenceError)
+  const Book = createModel('Book')
+  const book = new Book()
+  const error = t.throws(() => book.consumer, ReferenceError)
   t.is(error.message, 'Book.consumer must be defined as an instance of Consumer')
 })
 
@@ -67,21 +68,18 @@ test('can create as instance', async t => {
   const url = await listen(server())
   const api = consume(url)
 
-  class Book extends Model {
-  }
-  Book.consumer = api.books // This should be a static property within the
-  // class but for some reason ava doesn't like them
+  const Book = createModel('Book', api.books)
 
   const book = new Book()
 
-  t.false(book._stored)
-  t.falsy(book.id)
+  t.false(book.stored)
+  t.falsy(book.primaryKey)
 
   book.title = 'My Awesome Book'
   book.authorId = 2
   await book.save()
 
-  t.true(book._stored)
+  t.true(book.stored)
   t.is(book.primaryKey, 3)
 })
 
@@ -89,10 +87,7 @@ test('can retrieve all statically', async t => {
   const url = await listen(server())
   const api = consume(url)
 
-  class Book extends Model {
-  }
-  Book.consumer = api.books // This should be a static property within the
-  // class but for some reason ava doesn't like them
+  const Book = createModel('Book', api.books)
 
   // Retrieve the resource first
   const books = await Book.all()
@@ -105,10 +100,7 @@ test('can retrieve item statically', async t => {
   const url = await listen(server())
   const api = consume(url)
 
-  class Book extends Model {
-  }
-  Book.consumer = api.books // This should be a static property within the
-  // class but for some reason ava doesn't like them
+  const Book = createModel('Book', api.books)
 
   // Retrieve the resource first
   const book = await Book.find(1)
@@ -120,31 +112,29 @@ test('can create statically', async t => {
   const url = await listen(server())
   const api = consume(url)
 
-  class Book extends Model {
-  }
-  Book.consumer = api.books // This should be a static property within the
-  // class but for some reason ava doesn't like them
+  const Book = createModel('Book', api.books)
 
   const book = await Book.create({
     title: 'My Awesome Book',
     authorId: 3
   })
+
   t.true(book instanceof Book)
+  t.true(book.stored)
+  t.is(book.primaryKey, 3)
 })
 
 test('can update statically', async t => {
   const url = await listen(server())
   const api = consume(url)
 
-  class Book extends Model {
-  }
-  Book.consumer = api.books // This should be a static property within the
-  // class but for some reason ava doesn't like them
+  const Book = createModel('Book', api.books)
 
   const book = await Book.update(1, {
     title: 'My Awesome Book',
     authorId: 3
   })
+
   t.true(book instanceof Book)
   t.is(book.id, 1)
 })

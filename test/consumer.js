@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import server from './fixtures/server'
 import listen from 'test-listen'
-import { consume, Model, Collection } from '../lib/index'
+import { consume, Model, createModel, Collection } from '../lib/index'
 import test from 'ava'
 
 test('consumer instantiates correctly', async t => {
@@ -64,11 +64,10 @@ test('find() can collect into a specific model', async t => {
   const url = await listen(server())
   const api = consume(url)
 
-  class Book extends Model {
-  }
+  const Book = createModel('Book', api.books)
 
   const book = await api.books.as(Book).find(1)
-  t.is(book.constructor.name, 'Book')
+  t.true(book instanceof Book)
   t.is(book.title, 'The Great Gatsby')
 })
 

@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import server from './fixtures/server'
 import listen from 'test-listen'
-import {consume, Model, Collection} from '../lib/index'
+import { consume, Model, Collection } from '../lib/index'
 import test from 'ava'
 
 test('consumer instantiates correctly', async t => {
@@ -40,7 +40,7 @@ test('chaining properties updates URL', async t => {
 })
 
 test('all() retrieves data', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   const books = await api.books.all()
@@ -51,7 +51,7 @@ test('all() retrieves data', async t => {
 })
 
 test('find() retrieves data', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   const book = await api.books.find(1)
@@ -61,7 +61,7 @@ test('find() retrieves data', async t => {
 })
 
 test('find() can collect into a specific model', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   class Book extends Model {
@@ -73,7 +73,7 @@ test('find() can collect into a specific model', async t => {
 })
 
 test('create() creates a new resource', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   const data = {
@@ -88,7 +88,7 @@ test('create() creates a new resource', async t => {
 })
 
 test('update() updates an existing resource', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   const book = await api.books.find(1)
@@ -104,14 +104,14 @@ test('update() updates an existing resource', async t => {
 })
 
 test('delete() deletes a resource', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   t.true(await api.books.delete(1))
 })
 
 test('returns nothing for 404', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   const model = await api.notAnEndpoint.find(1)
@@ -119,7 +119,7 @@ test('returns nothing for 404', async t => {
 })
 
 test('rejects for any other status', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   return t.throws(api.thisEndpointErrors.find(1))

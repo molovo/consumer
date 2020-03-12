@@ -1,10 +1,10 @@
 import server from './fixtures/server'
 import listen from 'test-listen'
-import {consume, Collection, Model} from '../lib/index'
+import { consume, Collection, Model } from '../lib/index'
 import test from 'ava'
 
 test('can be created with models', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
   const models = Collection.from([new Model({}, api), new Model({}, api)])
   t.is(models.length, 2)

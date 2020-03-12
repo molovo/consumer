@@ -1,11 +1,11 @@
 import 'isomorphic-fetch'
 import server from './fixtures/server'
 import listen from 'test-listen'
-import {consume, Model, Collection} from '../lib/index'
+import { consume, Model, Collection } from '../lib/index'
 import test from 'ava'
 
 test('can be updated', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   // Retrieve the resource first
@@ -20,7 +20,7 @@ test('can be updated', async t => {
 })
 
 test('can be updated with mass assignment', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   // Retrieve the resource first
@@ -36,13 +36,13 @@ test('can be updated with mass assignment', async t => {
 })
 
 test('must define consumer', async t => {
-  class Book extends Model {}
+  class Book extends Model { }
   const error = t.throws(() => new Book(), ReferenceError)
   t.is(error.message, 'Book.consumer must be defined as an instance of Consumer')
 })
 
 test('can be deleted', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   // Retrieve the resource first
@@ -52,7 +52,7 @@ test('can be deleted', async t => {
 })
 
 test('prefers changed data when retrieving values', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   const book = await api.books.find(1)
@@ -64,7 +64,7 @@ test('prefers changed data when retrieving values', async t => {
 })
 
 test('can create as instance', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   class Book extends Model {
@@ -81,13 +81,12 @@ test('can create as instance', async t => {
   book.authorId = 2
   await book.save()
 
-  console.log(book._data)
   t.true(book._stored)
   t.is(book.primaryKey, 3)
 })
 
 test('can retrieve all statically', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   class Book extends Model {
@@ -103,7 +102,7 @@ test('can retrieve all statically', async t => {
 })
 
 test('can retrieve item statically', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   class Book extends Model {
@@ -118,7 +117,7 @@ test('can retrieve item statically', async t => {
 })
 
 test('can create statically', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   class Book extends Model {
@@ -134,7 +133,7 @@ test('can create statically', async t => {
 })
 
 test('can update statically', async t => {
-  const url = await listen(server.listen())
+  const url = await listen(server())
   const api = consume(url)
 
   class Book extends Model {
